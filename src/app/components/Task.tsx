@@ -4,7 +4,7 @@ import { ITask } from "@/types/tasks";
 import { useRouter } from "next/navigation";
 import { FormEventHandler, useState } from "react";
 import { FiEdit, FiTrash } from "react-icons/fi";
-import { deleteTodo, editTodo } from "../api/api";
+import { ApiBroker } from "../brokers/ApiBroker";
 import Modal from "./Modal";
 
 interface TaskProps {
@@ -19,11 +19,10 @@ const Task: React.FC<TaskProps> = ({ task }) => {
   const [taskComplete, setTaskComplete] = useState<boolean>(task.completed);
   const [characterCount, setCharacterCount] = useState<number>(task.text.length);
 
-
   const handleSubmitEditTodo: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
 
-    await editTodo({
+    await ApiBroker.editTodo({
       id: task.id,
       text: taskToEdit,
       completed: taskComplete,
@@ -35,14 +34,14 @@ const Task: React.FC<TaskProps> = ({ task }) => {
   };
 
   const handleDeleteTask = async (id: string) => {
-    await deleteTodo(id);
+    await ApiBroker.deleteTodo(id);
 
     setOpenModalDeleted(false);
     router.refresh();
   };
 
   const handleToggleComplete = async () => {
-    await editTodo({
+    await ApiBroker.editTodo({
       id: task.id,
       text: task.text,
       completed: !taskComplete,
