@@ -11,6 +11,7 @@ const AddTask = () => {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [newTaskValue, setNewTaskValue] = useState<string>("");
+  const [characterCount, setCharacterCount] = useState<number>(0);
 
   const handleSubmitNewTodo: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -18,18 +19,26 @@ const AddTask = () => {
     await addTodo({
       id: uuidv4(),
       text: newTaskValue,
-      complete: false,
+      completed: false,
     });
 
     setNewTaskValue("");
+    setCharacterCount(0);
     setModalOpen(false);
     router.refresh();
+  };
+
+  const handleNewTaskChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewTaskValue(e.target.value);
+    setCharacterCount(e.target.value.length);
   };
 
   return (
     <div>
       <button
-        onClick={() => setModalOpen(true)}
+        onClick={() => {
+          setNewTaskValue("");
+          setModalOpen(true)}}
         className="btn btn-primary w-full"
       >
         Add new task
@@ -39,15 +48,22 @@ const AddTask = () => {
       <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
         <form onSubmit={handleSubmitNewTodo}>
           <h3 className="font-bold text-lg">Add new task</h3>
-          <div className="modal-action">
-            <input
+          <div className="modal-action flex flex-col">
+            <textarea
               value={newTaskValue}
-              onChange={(e) => setNewTaskValue(e.target.value)}
-              type="text"
-              placeholder="Type here"
-              className="input w-full input-bordered"
-            />
-            <button type="submit" className="btn">
+              onChange={handleNewTaskChange}
+              maxLength={280}
+              placeholder="Type here..."
+              className={`
+                textarea textarea-lg placeholder:italic placeholder:text-slate-400 
+                block w-full h-40 border border-slate-600 rounded-xl py-2 pl-9 pr-3 shadow-sm 
+                focus:outline-none focus:border-sky-500 focus:ring-sky-500 
+                focus:ring-1 sm:text-sm
+              `}
+            ></textarea>
+
+            <div className="m-5 text-sm text-right">{characterCount}/280</div>
+            <button type="submit" className="btn btn-primary">
               Submit
             </button>
           </div>

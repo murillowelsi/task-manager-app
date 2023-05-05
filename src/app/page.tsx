@@ -1,15 +1,15 @@
 import { } from "next/font/google";
-import { getAllTodos } from "./api/api";
 import AddTask from "./components/AddTask";
 import TodoList from "./components/TodoList";
 
 import Image from "next/image";
 
 import logo from "../../public/25friday_logo.svg";
+import { ApiBroker } from "./brokers";
 import Greeting from "./components/Greeting";
 
 export default async function Home() {
-  const tasks = await getAllTodos();
+  const tasks = await ApiBroker.getAllTodos();
 
   return (
     <>

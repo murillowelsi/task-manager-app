@@ -1,16 +1,16 @@
 import { ITask } from "@/types/tasks";
 
-const baseUrl = "https://json-server-task-manager-1hrp8lfvl-murillowelsi.vercel.app";
+const baseUrl = "http://localhost:3000/api";
 
 export const getAllTodos = async (): Promise<ITask[]> => {
-  const res = await fetch(`${baseUrl}/tasks`, { cache: 'no-store' });
+  const res = await fetch(`${baseUrl}/tasks`, { method: 'get', cache: 'no-store' });
   const todos = await res.json();
 
   return todos;
 };
 
 export const addTodo = async (todo: ITask): Promise<ITask> => {
-  const res = await fetch(`${baseUrl}/tasks`, {
+  const res = await fetch(`${baseUrl}/tasks/create`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

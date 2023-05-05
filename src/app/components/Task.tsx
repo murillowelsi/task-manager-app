@@ -16,7 +16,9 @@ const Task: React.FC<TaskProps> = ({ task }) => {
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [openModalDeleted, setOpenModalDeleted] = useState<boolean>(false);
   const [taskToEdit, setTaskToEdit] = useState<string>(task.text);
-  const [taskComplete, setTaskComplete] = useState<boolean>(task.complete);
+  const [taskComplete, setTaskComplete] = useState<boolean>(task.completed);
+  const [characterCount, setCharacterCount] = useState<number>(task.text.length);
+
 
   const handleSubmitEditTodo: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -24,11 +26,10 @@ const Task: React.FC<TaskProps> = ({ task }) => {
     await editTodo({
       id: task.id,
       text: taskToEdit,
-      complete: taskComplete,
+      completed: taskComplete,
     });
 
     setTaskToEdit("");
-    setTaskComplete(false);
     setOpenModalEdit(false);
     router.refresh();
   };
@@ -44,7 +45,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
     await editTodo({
       id: task.id,
       text: task.text,
-      complete: !taskComplete,
+      completed: !taskComplete,
     });
 
     setTaskComplete(!taskComplete);
@@ -61,26 +62,41 @@ const Task: React.FC<TaskProps> = ({ task }) => {
           onChange={handleToggleComplete}
         />
       </td>
-      <td className={`w-full ${task.complete ? 'line-through' : ''}`}>{task.text}</td>
+      <td
+        className={`w-full font-mono text-2xl max-w-1/2 break-words whitespace-normal ${
+          task.completed ? "decoration-blue-700 line-through decoration-4" : ""
+        }`}
+      >
+        {task.text}
+      </td>
       <td className="flex gap-5">
         <FiEdit
           onClick={() => setOpenModalEdit(true)}
           cursor="pointer"
-          className="text-blue-500 hover:text-warning"
+          className={`hover:text-warning`}
           size={30}
         />
         <Modal modalOpen={openModalEdit} setModalOpen={setOpenModalEdit}>
           <form onSubmit={handleSubmitEditTodo}>
             <h3 className="font-bold text-lg">Edit task</h3>
-            <div className="modal-action">
-              <input
+            <div className="modal-action flex flex-col">
+              <textarea
                 value={taskToEdit}
-                onChange={(e) => setTaskToEdit(e.target.value)}
-                type="text"
-                placeholder="Type here"
-                className="input input-bordered w-full"
-              />
-              <button type="submit" className="btn">
+                onChange={(e) => {
+                  setTaskToEdit(e.target.value)
+                  setCharacterCount(e.target.value.length)
+                }}
+                maxLength={280}
+                placeholder="Type here..."
+                className={`
+                textarea textarea-lg placeholder:italic placeholder:text-slate-400 
+                block w-full h-40 border border-slate-600 rounded-xl py-2 pl-9 pr-3 shadow-sm 
+                focus:outline-none focus:border-sky-500 focus:ring-sky-500 
+                focus:ring-1 sm:text-sm
+              `}
+              ></textarea>
+              <div className="m-5 text-sm text-right">{characterCount}/280</div>
+              <button type="submit" className="btn btn-primary">
                 Submit
               </button>
             </div>
@@ -92,10 +108,9 @@ const Task: React.FC<TaskProps> = ({ task }) => {
           className="text-red-500 hover:text-warning"
           size={30}
         />
+
         <Modal modalOpen={openModalDeleted} setModalOpen={setOpenModalDeleted}>
-          <h3 className="text-lg">
-            Are you sure you want to delete this task?
-          </h3>
+          <h3 className="text-lg">Are you sure you want to delete?</h3>
           <div className="modal-action">
             <button className="btn" onClick={() => handleDeleteTask(task.id)}>
               Yes

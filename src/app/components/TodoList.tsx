@@ -9,9 +9,9 @@ interface TodoListProps {
 
 const TodoList: React.FC<TodoListProps> = ({ tasks }) => {
   const [showCompleted, setShowCompleted] = useState(false);
-  const pendingTasks = tasks.filter((task) => !task.complete);
-  const completedTasks = tasks.filter((task) => task.complete && showCompleted);
-  const hasCompletedTasks = tasks.some((task) => task.complete);
+  const pendingTasks = tasks.filter((task) => !task.completed);
+  const completedTasks = tasks.filter((task) => task.completed && showCompleted);
+  const hasCompletedTasks = tasks.some((task) => task.completed);
 
   return (
     <div className="overflow-x-auto">
@@ -48,7 +48,7 @@ const TodoList: React.FC<TodoListProps> = ({ tasks }) => {
                 ? `${pendingTasks.length} Item Left`
                 : pendingTasks.length > 1
                 ? `${pendingTasks.length} Items Left`
-                : "No items left, Good Job!"}
+                : "No items left!"}
             </th>
           </tr>
         </tfoot>
