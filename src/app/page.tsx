@@ -1,4 +1,3 @@
-import { } from "next/font/google";
 import AddTask from "./components/AddTask";
 import TodoList from "./components/TodoList";
 
