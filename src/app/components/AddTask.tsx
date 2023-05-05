@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { FormEventHandler, useState } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { v4 as uuidv4 } from "uuid";
-import { addTodo } from "../api/api";
+import { ApiBroker } from "../brokers/ApiBroker";
 import Modal from "./Modal";
 
 const AddTask = () => {
@@ -16,7 +16,7 @@ const AddTask = () => {
   const handleSubmitNewTodo: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
 
-    await addTodo({
+    await ApiBroker.addTodo({
       id: uuidv4(),
       text: newTaskValue,
       completed: false,
